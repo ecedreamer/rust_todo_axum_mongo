@@ -1,12 +1,23 @@
 use crate::models::Todo;
+use std::env;
 use chrono::{DateTime, Local};
 use futures_util::StreamExt;
+use urlencoding::encode;
 use mongodb::bson::oid::ObjectId;
-use mongodb::{bson, Client, Database};
+use mongodb::{bson, Client, Database, options::ClientOptions};
+
 use tracing::info;
 
 pub async fn establish_mongodb_connection() -> Result<Database, mongodb::error::Error> {
-    let client = Client::with_uri_str("mongodb://localhost:27017").await?;
+    let mongo_url = env::var("MONGO_URL").expect("MONGO_URL not set");
+    let mongo_username = env::var("MONGO_USERNAME").expect("MONGO_USERNAME not set");
+    let raw_password = env::var("MONGO_PASSWORD").expect("MONGO_PASSWORD not set");
+    let mongo_password = encode(&raw_password);
+    // let client = Client::with_uri_str("mongodb://localhost:27017").await?;
+    let connection_string = format!("mongodb://{mongo_username}:{mongo_password}@{mongo_url}/?authSource=admin");
+    let client_options = ClientOptions::parse(connection_string).await?;
+    let client = Client::with_options(client_options)?;
+
     let db = client.database("rs_test_db");
     Ok(db)
 }
