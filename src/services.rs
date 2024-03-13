@@ -1,10 +1,10 @@
 use crate::models::Todo;
-use std::env;
 use chrono::{DateTime, Local};
 use futures_util::StreamExt;
-use urlencoding::encode;
 use mongodb::bson::oid::ObjectId;
-use mongodb::{bson, Client, Database, options::ClientOptions};
+use mongodb::{bson, options::ClientOptions, Client, Database};
+use std::env;
+use urlencoding::encode;
 
 use tracing::info;
 
@@ -14,7 +14,8 @@ pub async fn establish_mongodb_connection() -> Result<Database, mongodb::error::
     let raw_password = env::var("MONGO_PASSWORD").expect("MONGO_PASSWORD not set");
     let mongo_password = encode(&raw_password);
     // let client = Client::with_uri_str("mongodb://localhost:27017").await?;
-    let connection_string = format!("mongodb://{mongo_username}:{mongo_password}@{mongo_url}/?authSource=admin");
+    let connection_string =
+        format!("mongodb://{mongo_username}:{mongo_password}@{mongo_url}/?authSource=admin");
     let client_options = ClientOptions::parse(connection_string).await?;
     let client = Client::with_options(client_options)?;
 
@@ -83,7 +84,9 @@ pub async fn update_todo(object_id: ObjectId, todo: Todo) -> mongodb::error::Res
     }
 }
 
-pub async fn delete_todo(object_id: ObjectId) -> mongodb::error::Result<mongodb::results::DeleteResult> {
+pub async fn delete_todo(
+    object_id: ObjectId,
+) -> mongodb::error::Result<mongodb::results::DeleteResult> {
     let db = establish_mongodb_connection().await?;
     let collection = db.collection::<Todo>("todos");
 

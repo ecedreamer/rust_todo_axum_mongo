@@ -104,12 +104,23 @@ pub async fn delete_todo(Path(todo_id): Path<String>) -> impl IntoResponse {
         match _delete_result {
             Ok(result) => {
                 if result.deleted_count == 1 {
-                    (StatusCode::OK, Json(json!({"message": format!("Todo with id {todo_id} deleted successfully")})))
+                    (
+                        StatusCode::OK,
+                        Json(
+                            json!({"message": format!("Todo with id {todo_id} deleted successfully")}),
+                        ),
+                    )
                 } else {
-                    (StatusCode::OK, Json(json!({"message": format!("Todo with id {todo_id} not found")})))
+                    (
+                        StatusCode::OK,
+                        Json(json!({"message": format!("Todo with id {todo_id} not found")})),
+                    )
                 }
-            },
-            Err(err) => (StatusCode::OK, Json(json!({"message": format!("Error in deleting todo. {err}")})))
+            }
+            Err(err) => (
+                StatusCode::OK,
+                Json(json!({"message": format!("Error in deleting todo. {err}")})),
+            ),
         }
     } else {
         (

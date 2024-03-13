@@ -5,29 +5,29 @@ GET http://0.0.0.0:8080
 GET http://0.0.0.0:8080/todos
 
 ### get todo
-GET http://0.0.0.0:8080/todos/65efc34c82e5aa261a76bbd2
+GET http://0.0.0.0:8080/todos/65f1ba0f09e9bd4efa370695
 
 ### insert todo
 POST http://0.0.0.0:8080/todos
 Content-Type: application/json
 
 {
-    "title": "Need to write the Rust Code",
-    "content": "From today, I need to write the Rust code for 2 hours daily. ",
+    "title": "Title two",
+    "content": "This is the title 2",
     "status": "Open"
 }
 
 
 ### update todo
-PUT http://0.0.0.0:8080/todos/65ef390b55f2e84700ac9abd
+PUT http://0.0.0.0:8080/todos/65f1ba0f09e9bd4efa370695
 Content-Type: application/json
 
 {
-    "title": "Fourth Todo Modified",
-    "content": "This is the Fourth todo modified",
+    "title": "Title One Modified",
+    "content": "This is the title 1",
     "status": "Doing",
-    "date": "Tue, 12 Mar 2024 02:21:23 GMT"
+    "date": "2024-03-13 14:37:03"
 }
 
 ### delete todo
-DELETE http://0.0.0.0:8080/todos/65efbbfba7bcf2a5adc72803
+DELETE http://0.0.0.0:8080/todos/65f1ba6309e9bd4efa37069f
