@@ -1,6 +1,6 @@
 use axum::{extract::Path, http::StatusCode, response::IntoResponse, Json};
 
-use crate::{models::Todo, services};
+use crate::{models::{Category, Todo}, services};
 use mongodb::bson;
 use serde_json::json;
 use std::str::FromStr;
@@ -126,6 +126,61 @@ pub async fn delete_todo(Path(todo_id): Path<String>) -> impl IntoResponse {
         (
             StatusCode::BAD_REQUEST,
             Json(json!({"message": "Invalid ObjectId"})),
+        )
+    }
+}
+
+
+pub async fn list_categories() -> impl IntoResponse {
+    tracing::info!("Page: list activities");
+    let activities = services::get_categories().await.unwrap();
+    (StatusCode::OK, Json(activities))
+}
+
+
+pub async fn get_category(Path(category_id): Path<String>) -> impl IntoResponse {
+    tracing::info!("Page: get a todo with {}", &category_id);
+
+    if let Ok(object_id) = bson::oid::ObjectId::from_str(&category_id) {
+        match services::get_category(object_id).await {
+            Ok(Some(category)) => (StatusCode::OK, Json(json!(category))),
+            Ok(None) => (
+                StatusCode::NOT_FOUND,
+                Json(json!({"message": "Category not found"})),
+            ),
+            Err(err) => (
+                StatusCode::NOT_FOUND,
+                Json(json!({"message": err.to_string()})),
+            ),
+        }
+    } else {
+        (
+            StatusCode::BAD_REQUEST,
+            Json(json!({"message": "Invalid ObjectId"})),
+        )
+    }
+}
+
+pub async fn add_category(Json(payload): Json<serde_json::Value>) -> impl IntoResponse {
+    tracing::info!("Page: insert a category");
+    if let Ok(validated_data) = serde_json::from_value::<Category>(payload) {
+        let add_result = services::add_category(validated_data).await;
+        match add_result {
+            Ok(Some(category)) => (StatusCode::CREATED, Json(json!(category))),
+            Ok(None) => (
+                StatusCode::NOT_FOUND,
+                Json(json!({"message": "Category not found"})),
+            ),
+            Err(err) => (
+                StatusCode::NOT_FOUND,
+                Json(json!({"message": err.to_string()})),
+            ),
+        }
+    } else {
+        tracing::error!("Failed to deserialize JSON into YourStruct");
+        (
+            StatusCode::BAD_REQUEST,
+            Json(json!({"message": "Invalid payload"})),
         )
     }
 }
