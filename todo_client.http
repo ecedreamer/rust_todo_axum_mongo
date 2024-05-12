@@ -38,7 +38,7 @@ GET http://localhost/api/categories
 
 
 ### get single category
-GET http://localhost/api/categories/65f1ba7309e9bd4efa3706a4
+GET http://localhost/api/categories/6640a1df8a950bfe45930501
 
 ### insert categories
 POST http://localhost/api/categories
@@ -46,5 +46,5 @@ Content-Type: application/json
 
 {
     "title": "Category 1",
-    "content": "Today is may 12"
+    "content": "Category 1"
 }
