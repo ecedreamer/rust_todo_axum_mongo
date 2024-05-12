@@ -1,0 +1,63 @@
+### home page
+GET http://localhost:8080/
+
+### list todos
+GET http://localhost:8080/todos
+
+### get todo
+GET http://localhost:8080/todos/6640e8db35947fc14dc91589
+
+### insert todo
+POST http://localhost:8080/todos
+Content-Type: application/json
+
+{
+    "title": "Sixth Todo",
+    "category_id": "6640ddd561fef81a0619e88c",
+    "content": "This is the Sixth todo",
+    "status": "Open"
+}
+
+
+### update todo
+PUT http://localhost:8080/todos/6640e8db35947fc14dc91589
+Content-Type: application/json
+
+{
+    "title": "Title Sixth Modified",
+    "content": "This is the title 6 modified",
+    "status": "Doing",
+    "date": "2024-03-13 16:29:05"
+}
+
+### delete todo
+DELETE http://localhost:8080/todos/6640e8db35947fc14dc91589
+
+
+### list categories
+GET http://localhost:8080/categories
+
+
+### get single category
+GET http://localhost:8080/categories/6640ddd561fef81a0619e88c
+
+### insert categories
+POST http://localhost:8080/categories
+Content-Type: application/json
+
+{
+    "title": "Category 3",
+    "content": "This is a Category 3"
+}
+
+### update categories
+PUT http://localhost:8080/categories/6640eb4d94ccd54e37c06205
+Content-Type: application/json
+
+{
+    "title": "Category 3",
+    "content": "Modified Category 3"
+}
+
+### delete category
+DELETE http://localhost:8080/categories/6640eb4d94ccd54e37c06205

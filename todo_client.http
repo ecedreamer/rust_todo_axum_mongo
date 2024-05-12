@@ -1,33 +1,50 @@
 ### home page
-GET http://0.0.0.0:8080
+GET http://localhost/api/
 
 ### list todos
-GET http://0.0.0.0:8080/todos
+GET http://localhost/api/todos
 
 ### get todo
-GET http://0.0.0.0:8080/todos/65f1ba0f09e9bd4efa370695
+GET http://localhost/api/todos/66409c6661a71f38f3a020e8
 
 ### insert todo
-POST http://0.0.0.0:8080/todos
+POST http://localhost/api/todos
 Content-Type: application/json
 
 {
-    "title": "Title two",
-    "content": "This is the title 2",
+    "title": "May 12",
+    "content": "Today is may 12",
     "status": "Open"
 }
 
 
 ### update todo
-PUT http://0.0.0.0:8080/todos/65f1ba0f09e9bd4efa370695
+PUT http://localhost/api/todos/65f1d451df8cae40c0c55d15
 Content-Type: application/json
 
 {
-    "title": "Title One Modified",
-    "content": "This is the title 1",
+    "title": "Title Three Modified",
+    "content": "This is the title 3",
     "status": "Doing",
-    "date": "2024-03-13 14:37:03"
+    "date": "2024-03-13 16:29:05"
 }
 
 ### delete todo
-DELETE http://0.0.0.0:8080/todos/65f1ba6309e9bd4efa37069f
+DELETE http://localhost/api/todos/65f1ba7309e9bd4efa3706a4
+
+
+### list categories
+GET http://localhost/api/categories
+
+
+### get single category
+GET http://localhost/api/categories/6640a1df8a950bfe45930501
+
+### insert categories
+POST http://localhost/api/categories
+Content-Type: application/json
+
+{
+    "title": "Category 1",
+    "content": "Category 1"
+}
