@@ -12,11 +12,6 @@ pub async fn get_todos() -> Result<Vec<Todo>, mongodb::error::Error> {
 }
 
 pub async fn get_todo(_id: ObjectId) -> mongodb::error::Result<Option<Todo>> {
-    // let db = mongoservices::establish_mongodb_connection().await?;
-    // let collection = db.collection::<Todo>("todos");
-
-    // let filter = bson::doc! {"_id": _id};
-    // collection.find_one(filter, None).await
     mongoservices::find_one("todos", _id).await
 }
 
