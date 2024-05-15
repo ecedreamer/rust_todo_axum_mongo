@@ -13,11 +13,12 @@ pub async fn establish_mongodb_connection() -> Result<Database, mongodb::error::
     let mongo_username = env::var("MONGO_USERNAME").expect("MONGO_USERNAME not set");
     let raw_password = env::var("MONGO_PASSWORD").expect("MONGO_PASSWORD not set");
     let mongo_password = encode(&raw_password);
+
     let connection_string =
         format!("mongodb://{mongo_username}:{mongo_password}@{mongo_url}/?authSource=admin");
-    // let connection_string = format!("mongodb://{mongo_url}");
     let mut client_options = ClientOptions::parse(connection_string).await?;
     client_options.max_pool_size = Some(10);
+
     let client = Client::with_options(client_options)?;
 
     let db = client.database("rs_test_db");
@@ -110,6 +111,5 @@ where
     let query = bson::doc! {"_id": _id};
 
     let result = collection.delete_one(query, None).await;
-    // info!("Deleted documents: {:?}", result);
     result
 }

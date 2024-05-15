@@ -1,10 +1,16 @@
-use axum::{
-    routing::{delete, get, post, put},
-    Router,
-};
-use rust_todo_axum_mongo::handlers;
+use axum::{routing::get, Router};
+use rust_todo_axum_mongo::routers::{category_router, todo_router};
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
+
+use axum::{http::StatusCode, response::IntoResponse, Json};
+
+use serde_json::json;
+
+pub async fn home() -> impl IntoResponse {
+    tracing::info!("Page: home");
+    (StatusCode::OK, Json(json!({"status": "ok"})))
+}
 
 #[tokio::main]
 async fn main() {
@@ -14,20 +20,9 @@ async fn main() {
     let cors = CorsLayer::new().allow_origin(origins);
 
     let app = Router::new()
-        .route("/", get(handlers::home))
-        .route("/todos", get(handlers::list_todos))
-        .route("/todos/:todo_id", get(handlers::get_todo))
-        .route("/todos", post(handlers::add_todo))
-        .route("/todos/:todo_id", put(handlers::update_todo))
-        .route("/todos/:todo_id", delete(handlers::delete_todo))
-        .route("/categories", get(handlers::list_categories))
-        .route("/categories/:category_id", get(handlers::get_category))
-        .route("/categories", post(handlers::add_category))
-        .route("/categories/:category_id", put(handlers::update_category))
-        .route(
-            "/categories/:category_id",
-            delete(handlers::delete_category),
-        )
+        .route("/", get(home))
+        .merge(category_router::get_category_router().await)
+        .merge(todo_router::get_todo_router().await)
         .layer(ServiceBuilder::new().layer(cors));
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
