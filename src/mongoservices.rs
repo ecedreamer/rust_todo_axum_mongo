@@ -1,3 +1,4 @@
+use futures_util::lock::Mutex;
 use futures_util::StreamExt;
 use mongodb::error::Error as MongoError;
 use mongodb::{
@@ -5,24 +6,41 @@ use mongodb::{
     options::ClientOptions,
     Client, Database,
 };
+use std::borrow::Borrow;
+use std::cell::Cell;
 use std::env;
 use urlencoding::encode;
 
+use lazy_static::lazy_static;
+
+
+// lazy_static! {
+//     static ref DATABASE: Option<Database>= None;
+// }
+
+static DATABASE: Option<Database> = None;
+
+
+
 pub async fn establish_mongodb_connection() -> Result<Database, mongodb::error::Error> {
-    let mongo_url = env::var("MONGO_URL").expect("MONGO_URL not set");
-    let mongo_username = env::var("MONGO_USERNAME").expect("MONGO_USERNAME not set");
-    let raw_password = env::var("MONGO_PASSWORD").expect("MONGO_PASSWORD not set");
-    let mongo_password = encode(&raw_password);
-
-    let connection_string =
-        format!("mongodb://{mongo_username}:{mongo_password}@{mongo_url}/?authSource=admin");
-    let mut client_options = ClientOptions::parse(connection_string).await?;
-    client_options.max_pool_size = Some(10);
-
-    let client = Client::with_options(client_options)?;
-
-    let db = client.database("rs_test_db");
-    Ok(db)
+    if let Some(db) = &DATABASE {
+        Ok(db.clone())
+    } else {
+        let mongo_url = env::var("MONGO_URL").expect("MONGO_URL not set");
+        let mongo_username = env::var("MONGO_USERNAME").expect("MONGO_USERNAME not set");
+        let raw_password = env::var("MONGO_PASSWORD").expect("MONGO_PASSWORD not set");
+        let mongo_password = encode(&raw_password);
+    
+        let connection_string =
+            format!("mongodb://{mongo_username}:{mongo_password}@{mongo_url}/?authSource=admin");
+        let mut client_options = ClientOptions::parse(connection_string).await?;
+        client_options.max_pool_size = Some(10);
+    
+        let client = Client::with_options(client_options)?;
+    
+        let db = client.database("rs_test_db");
+        Ok(db)
+    }
 }
 
 pub async fn find<T>(collection_name: &str) -> Result<Vec<T>, MongoError>
